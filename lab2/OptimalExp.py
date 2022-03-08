@@ -61,7 +61,7 @@ def main():
     Root = Matrix.CalcRoot()
 
     for i in range(0, len(Root)):
-        print("x" + str(Root[i][0] + 1) + " = " + str(Root[i][1]))
+        print("x" + str(Root[i][0] + 1) + " = " + str(Root[i][0]))
 
 if __name__ == "__main__":
     main()
