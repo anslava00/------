@@ -29,6 +29,7 @@ class ChooseGause:
     def CalcRoot(self):
         print(self.M)
         print("some")
+        print("add some")
 
 def main():
     File = ["Input3n3Ch", "Input4n4Ch", "Input3n3Op"]
