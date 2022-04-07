@@ -108,8 +108,8 @@ class ChooseGause:
         self.__MakeWhiteText()
 
 def main():
-    File = ["Input3n3Ch", "Input4n4Ch", "Input3n3Op"]
-    Matrix = ChooseGause('O:\\Lesson\\FileLesson\\ВЫЧМАТ\\lab2\\' + File[2])
+    File = ["Input3n3Ch", "Input4n4Ch", "Input3n3Op", "Test1"]
+    Matrix = ChooseGause('O:\\Lesson\\FileLesson\\ВЫЧМАТ\\lab2\\' + File[3])
     Root = Matrix.CalcRoot()
 
     for i in range(0, len(Root)):
