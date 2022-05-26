@@ -1,9 +1,10 @@
-from cmath import sqrt
+from numpy import dot, matrix, transpose, zeros, shape
 from colorama import Fore
-class Zedel:
+class Grad:
     def __init__(self, file) -> None:
         self.A = [] #matrix a0, ..., aN, bi
-        self.accuracy = 10**-11
+        self.x = []
+        self.accuracy = 10**-4
         self.N = 0  #Count string NxN
         self.__ParsingFile(file)
 
@@ -23,43 +24,26 @@ class Zedel:
             self.A[-1].append(float(tmpString))
 
     def CalcRoot(self):
-        # x0 = [self.A[i][-1]/self.A[i][i] for i in range(self.N)]
-        x0 = [0 for i in range(self.N + 1)]
-        k = 1
+        A = matrix(self.A)[:, :-1]
+        b = matrix(self.A)[:, -1:]
+        x = matrix(zeros((self.N, 1)))
+        k = 0
         while(True):
-            x_0 = x0.copy()
-            x1 = []
-            for i in range(self.N):
-                x1.append(self.A[i][-1] / self.A[i][i])
-                for j in range(self.N):
-                    if (i != j):
-                        x1[i] -= (self.A[i][j] * x0[j]) / self.A[i][i] 
-                x0[i] = x1[i]
-            print(str(k) + " step: " + str(x1))
-            k += 1
-            if (self.CheckAccuracy(x1, x_0)):
-                x0 = x1[:]
+            F = (dot(A, x) - b)
+            r = -F
+            if (self.CheckAccuracy(r)):
                 break
-            x0 = x1[:]
-        return x0
+            delta = (dot(transpose(r), r) / dot(transpose(r), dot(A, r)))[0, 0]
+            x = x - delta * F
+            k += 1
+            self.PrintMatrix(x.tolist(), 'X on iteration ' + str(k))
+        return transpose(x).tolist()[0]
 
-    def CheckAccuracy(self, x1, x0):
-        for i in range(len(x1)):
-            if (abs(x1[i] - x0[i]) > self.accuracy):
+    def CheckAccuracy(self, r):
+        for i in range(shape(r)[0]):
+            if (abs(r[i, 0]) > self.accuracy):
                 return False
         return True
-
-    def CheckDiagDominate(self):
-        for i in range(self.N):
-            sum = 0
-            for j in range(self.N):
-                if (i != j):
-                   sum += self.A[i][j]
-            if (abs(self.A[i][i]) < sum):
-                print(Fore.RED + "Diagonal is not dominate" + Fore.WHITE)
-                return False
-        print(Fore.GREEN + "Diagonal is dominate" + Fore.WHITE)
-        return True 
 
     def CheckOnTrue(self, root):
         F = True
@@ -75,7 +59,7 @@ class Zedel:
                 F = False
                 print(Fore.RED + "  : " + str(round(Sum, Rd)) + " : Ax === B: " + str(self.A[i][-1]) + Fore.WHITE)
             else:
-                print(Fore.GREEN + "  : " + str(round(Sum, Rd)) + " : Ax === B: " + str(self.A[i][-1]) + Fore.WHITE)
+                print(Fore.GREEN + "  : " + str(Sum) + " : Ax === B: " + str(self.A[i][-1]) + Fore.WHITE)
         return F
 
     def PrintMatrix(self, M, caption = ""):
@@ -98,12 +82,11 @@ class Zedel:
 
 
 def main():
-    File = ["TestSimp.txt", "Test1.txt", "Testkv.txt"]
-    Matrix = Zedel('O:\\Lesson\\FileLesson\\ВЫЧМАТ\\labs\\lab7\\' + File[2])
+    File = ["test.txt", "1"]
+    Matrix = Grad('O:\\Lesson\\FileLesson\\ВЫЧМАТ\\labs\\lab8\\' + File[0])
     Matrix.PrintMatrix(Matrix.A, 'Matrix')
-    if (not Matrix.CheckDiagDominate()):
-        return 0
     Root = Matrix.CalcRoot()
+    print(Root)
     if (Root):
         print(Fore.GREEN + "Root X : " + Fore.WHITE)
         for i in range(0, len(Root)):
